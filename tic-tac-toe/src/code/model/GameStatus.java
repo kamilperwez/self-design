@@ -1,4 +1,4 @@
-package code;
+package code.model;
 
 public enum GameStatus {
     YET_TO_START,
