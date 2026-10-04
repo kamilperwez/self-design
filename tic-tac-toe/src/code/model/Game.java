@@ -2,6 +2,7 @@ package code.model;
 
 import code.exceptions.DuplicateSymbolException;
 import code.exceptions.InvalidBoardDimensionException;
+import code.exceptions.InvalidBotOccurence;
 import code.exceptions.InvalidNumberOfPlayersException;
 
 import java.util.ArrayList;
@@ -153,9 +154,19 @@ public class Game {
                 throw new InvalidBoardDimensionException("Board Dimensions must be between 3 amd 10");
             }
         }
+        private void validateBotOccurence(List<Player> players){
+            int countBot=0;
+            for(Player player:players){
+                if(player.getPlayerType()==PlayerType.BOT){
+                    countBot++;
+                }
+                if(countBot >=2)throw new InvalidBotOccurence("We can have only 1 Bot in the game.");
+            }
+        }
         public void validate(){
             validateBoardDimension(this.board);
             validateNumberOfPlayers(this.board,this.players);
+            validateBotOccurence(this.players);
             validateUniqueSymbols(this.players);
         }
         public  Game build(){
