@@ -24,4 +24,10 @@ public class Move {
     public void setCell(Cell cell) {
         this.cell = cell;
     }
+
+    @Override
+    public String toString() {
+        return "Move{ cell=" + cell +
+                "}";
+    }
 }

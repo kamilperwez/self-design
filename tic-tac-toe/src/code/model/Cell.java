@@ -43,4 +43,13 @@ public class Cell {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "row=" + row +
+                ", col=" + col +
+                ", player=" + player +
+                '}';
+    }
 }

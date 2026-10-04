@@ -10,11 +10,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameController {
-    private WinnerCheckStrategy winnerCheckStrategy;
-
-    public GameController(int dimension) {
-        this.winnerCheckStrategy = new OrderOneStrategy(dimension);
-    }
 
     public Game createGame(int dimension, List<Player> players){
 
@@ -47,9 +42,10 @@ public class GameController {
         return game.getGameStatus();
     }
     public Move executeMove(Game game, Player player){
+        Scanner sc = new Scanner(System.in);
         if(player.getPlayerType().equals(PlayerType.HUMAN)) {
             while(true) {
-                Scanner sc = new Scanner(System.in);
+
                 System.out.println("Please enter the row for the cell");
                 int row = sc.nextInt();
                 System.out.println("Please enter the col for the cell");
@@ -67,6 +63,7 @@ public class GameController {
                 Cell playedMoveCell = game.getBoard().getMatrix().get(row).get(col);
                 playedMoveCell.setCellState(CellState.FILLED);
                 playedMoveCell.setPlayer(player);
+                game.getMoves().add(new Move(player,playedMoveCell));
                 return new Move(player, playedMoveCell);
             }
         }
@@ -74,17 +71,65 @@ public class GameController {
             //TODO:Implement factory for Bot Strategies
             System.out.println("Bot is making a move : ");
             BotPlayingStrategy strategy=new RandomBotPlayingStrategy();
-            return strategy.makeMove(game.getBoard(),player);
+            Move botMove= strategy.makeMove(game.getBoard(),player);
+            game.getMoves().add(botMove);
+            return botMove;
         }
     }
     public Player checkWinner(Game game, Move move){
 
-        return winnerCheckStrategy.checkWinner(game.getBoard(),move);
+        return game.getWinnerCheckStrategy().checkWinner(game.getBoard(),move);
     }
     public Board undoMove(Game game, Move move){
         return null;
     }
     public  void replayGame(Game game){
+        List<Move> moves = game.getMoves();
+
+        if (moves.isEmpty()) {
+            System.out.println("No moves to replay!");
+            return;
+        }
+
+        // Clear the current board
+        for (List<Cell> row : game.getBoard().getMatrix()) {
+            for (Cell cell : row) {
+                cell.setCellState(CellState.EMPTY);
+                cell.setPlayer(null);
+            }
+        }
+
+        System.out.println("REPLAYING GAME...");
+
+        // Replay every move
+        for (Move move : moves) {
+
+            Cell cell = move.getCell();
+            Player player = move.getPlayer();
+
+            // Apply move
+            cell.setCellState(CellState.FILLED);
+            cell.setPlayer(player);
+
+            // Display board after every move
+            displayGame(game);
+
+            System.out.println(
+                    player.getSymbol() +
+                            " played at (" +
+                            cell.getRow() + ", " +
+                            cell.getCol() + ")"
+            );
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
+
+        System.out.println("Replay finished!");
 
     }
 }

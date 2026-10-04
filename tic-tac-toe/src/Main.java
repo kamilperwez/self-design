@@ -19,7 +19,7 @@ public class Main {
         System.out.println("Welcome to TicTacToe Game");
         System.out.println("Please enter the dimension for the game: ");
         int dimension=sc.nextInt();
-        GameController gameController=new GameController(dimension);
+        GameController gameController=new GameController();
         System.out.println("Do you want a Bot : (Y/N) ");
         String botChoice=sc.next();
         if(botChoice.equalsIgnoreCase("Y")){
@@ -54,6 +54,12 @@ public class Main {
                 gameController.updateGameStatus(game,GameStatus.WIN);
                 break;
             }
+        }
+        System.out.println("Do you want to replay the game? (Y/N)");
+        String choice = sc.next();
+
+        if (choice.equalsIgnoreCase("Y")) {
+            gameController.replayGame(game);
         }
     }
 }

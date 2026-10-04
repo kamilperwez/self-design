@@ -4,6 +4,8 @@ import code.exceptions.DuplicateSymbolException;
 import code.exceptions.InvalidBoardDimensionException;
 import code.exceptions.InvalidBotOccurence;
 import code.exceptions.InvalidNumberOfPlayersException;
+import code.service.OrderOneStrategy;
+import code.service.WinnerCheckStrategy;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,13 +20,23 @@ public class Game {
     private List<Move> moves;
     private Player currentPlayer;
     private List<Board> oldBoardStates;
+    private WinnerCheckStrategy winnerCheckStrategy;
     private Game(Board board, List<Player> players){
         this.board=board;
         this.players=players;
         this.gameStatus=GameStatus.YET_TO_START;
+        winnerCheckStrategy=new OrderOneStrategy(board.getDimensions());
         this.moves=new ArrayList<>();
         this.oldBoardStates=new ArrayList<>();
 
+    }
+
+    public WinnerCheckStrategy getWinnerCheckStrategy() {
+        return winnerCheckStrategy;
+    }
+
+    public void setWinnerCheckStrategy(WinnerCheckStrategy winnerCheckStrategy) {
+        this.winnerCheckStrategy = winnerCheckStrategy;
     }
 
     public Board getBoard() {
