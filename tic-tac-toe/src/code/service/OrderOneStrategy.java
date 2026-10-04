@@ -1,5 +1,6 @@
 package code.service;
 
+import code.exceptions.DrawGameException;
 import code.model.Board;
 import code.model.Cell;
 import code.model.Move;
@@ -16,9 +17,11 @@ public class OrderOneStrategy implements WinnerCheckStrategy {
     private HashMap<Character,Integer> leftDiagonalHashMap=new HashMap<>();
     private HashMap<Character,Integer> rightDiagonalMap=new HashMap<>();
     private HashMap<Character,Integer> cornerHashMap=new HashMap<>();
+    private int drawCheck;
 
     public OrderOneStrategy(int dimension) {
         this.dimension = dimension;
+        this.drawCheck=dimension*dimension;
         for(int i=0;i<dimension;i++){
             rowHashMapList.add(new HashMap<>());
             colHashMapList.add(new HashMap<>());
@@ -31,6 +34,7 @@ public class OrderOneStrategy implements WinnerCheckStrategy {
         Cell cell=lastPlayedMove.getCell();
         int row=cell.getRow();
         int col=cell.getCol();
+        drawCheck--;
         boolean check= (
                 (checkRowsAndCols(rowHashMapList,player,row)) ||
                         (checkRowsAndCols(colHashMapList,player,col)) ||
@@ -41,12 +45,13 @@ public class OrderOneStrategy implements WinnerCheckStrategy {
         if(check){
             return player;
         }
+        if(drawCheck==0)throw new DrawGameException("GAME IS DRAWN!");
         return null;
     }
     public boolean checkRowsAndCols(List<HashMap<Character,Integer>> listHashMap, Player player,int index){
         HashMap<Character,Integer>hm=listHashMap.get(index);
         hm.put(player.getSymbol(),hm.getOrDefault(player.getSymbol(),0)+1);
-        if(hm.size()>=2)return false;
+
         if(hm.get(player.getSymbol())==dimension)return true;
         return false;
     }

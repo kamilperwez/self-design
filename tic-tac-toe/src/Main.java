@@ -11,7 +11,7 @@ public class Main {
         Scanner sc=new Scanner(System.in);
 
         //System.out.println("Hello world!");
-        GameController gameController=new GameController();
+
         int id=1;
 
         //adding players
@@ -19,9 +19,10 @@ public class Main {
         System.out.println("Welcome to TicTacToe Game");
         System.out.println("Please enter the dimension for the game: ");
         int dimension=sc.nextInt();
+        GameController gameController=new GameController(dimension);
         System.out.println("Do you want a Bot : (Y/N) ");
         String botChoice=sc.next();
-        if(botChoice.equals("Y")){
+        if(botChoice.equalsIgnoreCase("Y")){
             Bot bot=new Bot(id++,"BOT",'$', PlayerType.BOT, BotDifficultyLevel.MEDIUM);
             playerList.add(bot);
         }
@@ -49,6 +50,7 @@ public class Main {
             Player winner=gameController.checkWinner(game,executeMove);
             if(winner !=null){
                 System.out.println("WINNER is : "+ winner.getName());
+                gameController.displayGame(game);
                 gameController.updateGameStatus(game,GameStatus.WIN);
                 break;
             }
